@@ -18,9 +18,9 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Session   Session[]
-  Expense   Expense[]
+  Playable  Payable[]
 
-  @@map("user")
+  @@map("users")
 }
 
 model Session {
@@ -31,18 +31,40 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("session")
+  @@map("sessions")
 }
 
-model Expense {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  User        User     @relation(fields: [userId], references: [id])
-  description String
-  value       Int
-  payday      DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Transaction {
+  id             Int       @id @default(autoincrement())
+  valeu          Int
+  description    String    @db.VarChar(255)
+  paymentMethod  CardType
+  cardLastDigits String    @db.VarChar(4)
+  cardIssuer     String    @db.VarChar(50)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  Playable       Payable[]
 
-  @@map("expense")
+  @@map("transactions")
+}
+
+model Payable {
+  id            Int           @id @default(autoincrement())
+  status        PaymentStatus
+  userId        Int
+  User          User          @relation(fields: [userId], references: [id])
+  transactionId Int
+  Transaction   Transaction   @relation(fields: [transactionId], references: [id])
+
+  @@map("payables")
+}
+
+enum PaymentStatus {
+  paid
+  waiting_funds
+}
+
+enum CardType {
+  debit_card
+  credit_card
 }
