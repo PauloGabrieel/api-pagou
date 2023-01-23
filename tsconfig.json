@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
+    "allowJs": true,
     "esModuleInterop": true,
     "module": "CommonJS",
     "target": "es2020",
     "lib": ["es6"],
-    "allowJs": true,
     "removeComments": true,
-    "typeRoots": [
-      ".src/@types"
-    ]
   },
   "ts-node": {
     "esm": true
