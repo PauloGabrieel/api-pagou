@@ -10,8 +10,15 @@ async function create({ name, email, password}: UserCreation) {
         }
     })
 }
-
+async function findByEmail(email: string) {
+    return prisma.user.findFirst({
+        where: {
+            email
+        }
+    })
+}
 export type UserCreation = Omit<User, "createdAt" | "id" | "updatedAt">
 export const userRepository = {
-    create
+    create, 
+    findByEmail
 }
