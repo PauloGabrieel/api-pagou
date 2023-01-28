@@ -1,8 +1,10 @@
 import Joi from "joi"
-import { UserCreation } from "../repositories/userRepository"
+import { CreateUserParams } from "../protocols";
 
-export const createUserSchema = Joi.object<UserCreation>({
+const createUserSchema = Joi.object<CreateUserParams>({
     email: Joi.string().email().required(),
     name: Joi.string().required(),
     password: Joi.string().min(6).required()
 });
+
+export default createUserSchema;

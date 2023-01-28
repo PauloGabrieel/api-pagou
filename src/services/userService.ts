@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
-import { UserCreation,userRepository } from "../repositories/userRepository";
+import userRepository from "../repositories/userRepository";
 import { duplicatedEmailError } from "../errors/duplicateEmailError";
+import { CreateUserParams } from "../protocols";
 
-async function create({name, email, password}: UserCreation) {
+async function create({name, email, password}: CreateUserParams) {
     await emailAlready(email);
     
     password = await hashPassword(password);

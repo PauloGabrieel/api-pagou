@@ -1,7 +1,7 @@
 import { prisma } from "../config/database"
-import { User } from "@prisma/client"
+import { CreateUserParams } from "../protocols"
 
-async function create({ name, email, password}: UserCreation) {
+async function create({ name, email, password}: CreateUserParams ) {
     await prisma.user.create({
         data: {
             name,
@@ -17,8 +17,10 @@ async function findByEmail(email: string) {
         }
     })
 }
-export type UserCreation = Omit<User, "createdAt" | "id" | "updatedAt">
-export const userRepository = {
+
+const userRepository = {
     create, 
     findByEmail
 }
+
+export default userRepository;

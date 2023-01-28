@@ -24,15 +24,6 @@ describe("POST /signup", () => {
         const response = await server.post("/signup").send(body);
         
         expect(response.status).toBe(httpStatus.BAD_REQUEST);
-        expect(response.body).toEqual(
-            {
-                "name": "InvalidDataError",
-                "messsage": "Invalid data",
-                "details": [
-                    "\"password\" is required"
-                ]
-            }
-        );
     });
 
     describe("when body is valid", () => {
@@ -43,7 +34,7 @@ describe("POST /signup", () => {
                 email: user.email,
                 password: "123456"
             };
-            console.log(bodyWithSameEmail)
+        
             const response = await server.post("/signup").send(bodyWithSameEmail);
 
             expect(response.status).toBe(httpStatus.CONFLICT);

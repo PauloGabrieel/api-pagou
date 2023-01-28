@@ -17,7 +17,6 @@ export  function genereteValidBody() {
 
 export  async function createUser() {
     const body =  genereteValidBody();
-    console.log(body)
     return prisma.user.create({
         data: body
     });

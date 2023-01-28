@@ -1,6 +1,7 @@
 import express from 'express';
+import "express-async-errors"
 import cors from "cors";
-import expenseRouter  from './routers/expenseRouter';
+import authenticationRouter  from './routers/authenticationRouter';
 import userRouter from './routers/userRouter';
 
 const app = express();
@@ -10,6 +11,7 @@ app
     .use(express.json())
     .get("/health", (_req, res) => res.send("ok"))
     .use("/signup", userRouter)
+    .use("/signin", authenticationRouter)
     
 app.listen(4000, () => {
     console.log('Server running...');

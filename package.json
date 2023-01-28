@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "npx nodemon src/index.ts",
     "test": "npm run test:load-envs jest --forceExit",
-    "test:load-envs":"dotenv -e .env.test",
+    "test:load-envs": "dotenv -e .env.test",
     "test:migration:generate": "npx dotenv -e .env.test npx prisma migrate dev --name pagou postgres-init"
   },
   "repository": {
@@ -25,12 +25,14 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "http-status": "^1.6.2",
     "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0",
     "prisma": "^4.9.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
     "@types/jest": "^29.2.6",
