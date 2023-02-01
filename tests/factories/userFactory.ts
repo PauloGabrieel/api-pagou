@@ -19,7 +19,7 @@ export function generateValidBodyToSignUp() {
 
 export  async function createUser(params: Partial<User> = {} ) {
     const incomingPassword = params.password;
-    const hashPassword = await bcrypt.hash(incomingPassword,12);
+    const hashPassword = await bcrypt.hash(incomingPassword,10);
 
     return prisma.user.create({
         data: {

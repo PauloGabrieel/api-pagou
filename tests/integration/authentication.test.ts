@@ -63,9 +63,7 @@ describe("POST /signin", ()=> {
                     where: {
                         userId: user.id
                     }
-                })
-                console.log(response.body)
-                console.log(token);
+                });
                 expect(response.status).toBe(httpStatus.OK);
                 expect(response.body).toEqual({
                     user: {

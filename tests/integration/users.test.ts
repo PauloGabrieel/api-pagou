@@ -28,10 +28,11 @@ describe("POST /signup", () => {
 
     describe("when body is valid", () => {
         it("should respond with status 409 when there is an user with given email", async() => {
-            const user = await createUser();
+            const body = generateValidBodyToSignUp()
+            const user = await createUser(body);
             const bodyWithSameEmail = {
-                name: user.name,
-                email: user.email,
+                name: body.name,
+                email: body.email,
                 password: "123456"
             };
         
