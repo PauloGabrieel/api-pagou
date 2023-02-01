@@ -1,16 +1,16 @@
 import supertest from "supertest";
 import httpStatus from "http-status";
-import app from "../../src";
-import { invalidBody, createUser, genereteValidBody } from "../factories/userFactory";
+import app, { init, close } from "../../src/app";
+import { invalidBody, createUser, generateValidBodyToSignUp } from "../factories/userFactory";
 import { cleanDb } from "../helpers";
 import { prisma } from "../../src/config/database";
-import exp from "constants";
 
-const server = supertest(app);
-
-beforeEach(async () => {
+beforeAll(async () => {
+    await init();
     await cleanDb();
 });
+
+const server = supertest(app);
 
 describe("POST /signup", () => {
     it("should respond with status 400 when body is not given", async () => {
@@ -41,8 +41,9 @@ describe("POST /signup", () => {
         });
 
         it("should respond with status 201 and create user when email is unique",async () => {
-            const body = genereteValidBody();
+            const body = generateValidBodyToSignUp();
             const response = await server.post("/signup").send(body);
+
             const user = await prisma.user.findFirst({
                 where: {
                     email: body.email

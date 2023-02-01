@@ -4,6 +4,7 @@
     "rootDir": ".",
     "allowJs": true,
     "esModuleInterop": true,
+    "moduleResolution": "Node",
     "module": "CommonJS",
     "target": "es2020",
     "lib": ["es6"],

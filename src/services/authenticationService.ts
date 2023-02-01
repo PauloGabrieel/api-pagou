@@ -1,18 +1,25 @@
 import { invalidCredentialsError } from "../errors/invalidCredentialsError";
-import { UserParams } from "../protocols";
+import { UserParams, SigninResult } from "../protocols";
 import userRepository from "../repositories/userRepository";
 import sessionRepository from "../repositories/sessionRepository"; 
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
-async function signIn(params: UserParams ) {
+async function signIn(params: UserParams ): Promise<SigninResult> {
     const { password, email } = params;
     const user = await getUserOrFail(email);
 
     await validatePasswordOrFail(password, user.password);
     const token = await  createSession(user.id);
+    
+    return {
+        user: {
+            name: user.name,
+            email: user.email
 
-    return token;
+        },
+        token,
+    };
 };
 
 async function getUserOrFail(email: string) {

@@ -1,23 +1,31 @@
 import { prisma } from "../../src/config/database";
+import { faker } from "@faker-js/faker";
+import bcrypt from "bcrypt";
+import { User } from "@prisma/client";
 
 export function invalidBody() {
     return {
-        name: "paulo",
-        email: "paulo@hotmail.com"
+        name: faker.name.fullName()
     }
 };
 
-export  function genereteValidBody() {
+export function generateValidBodyToSignUp() {
     return {
-        name: "paulo",
-        email: "paulo@hotmail.com",
-        password: "123456"
+        name: faker.name.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(6)
     }
 } 
 
-export  async function createUser() {
-    const body =  genereteValidBody();
+export  async function createUser(params: Partial<User> = {} ) {
+    const incomingPassword = params.password;
+    const hashPassword = await bcrypt.hash(incomingPassword,12);
+
     return prisma.user.create({
-        data: body
-    });
+        data: {
+            email: params.email,
+            name: params.name,
+            password: hashPassword
+        }
+    })
 };
