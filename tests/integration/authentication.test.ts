@@ -8,6 +8,10 @@ import { prisma } from "../../src/config/database";
 
 beforeAll(async () => {
     await init();
+    
+});
+
+afterAll( async () => {
     await cleanDb();
 });
 

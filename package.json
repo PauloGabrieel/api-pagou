@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "dev": "npx nodemon src/server.ts",
-    "test": "NODE_ENV=test jest --passWithNoTests --runInBand",
+    "test": "npm run test:load-envs jest --passWithNoTests --runInBand",
     "test:load-envs": "dotenv -e .env.test",
     "test:migration:generate": "npx dotenv -e .env.test npx prisma migrate dev --name pagou postgres-init"
   },

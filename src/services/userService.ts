@@ -4,9 +4,13 @@ import { duplicatedEmailError } from "../errors/duplicateEmailError";
 import { CreateUserParams } from "../protocols";
 
 async function create({name, email, password}: CreateUserParams) {
+    console.log("chegou aqui")
     await emailAlready(email);
     
-    password = await hashPassword(password);
+    const hashPassword = await createHashPassword(password);
+    password = hashPassword;
+    
+
 
     await userRepository.create({name, email, password })
 };
@@ -19,10 +23,10 @@ async function emailAlready(email: string){
     }
 };
 
-async function hashPassword(password: string) {
+async function createHashPassword(password: string) {
     const hash = 12;
-    return bcrypt.hash(password, hash);
-
+    const hashPassword = await bcrypt.hash(password, hash);
+    return hashPassword;
 };
 export const userService = {
     create

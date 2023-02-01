@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import httpStatus from "http-status";
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import { prisma } from "../config/database";
 import unauthorizadeError from "../errors/unauthorizedError";
 
@@ -9,21 +9,21 @@ export async function authenticationToken(req: AuthenticatedRequest, res: Respon
     
     if(!autHeader) return unauthorizedResponse(res); 
     
-    const token = autHeader.replace("Bearer", "");
-
+    const token = autHeader.split(" ")[1];
+    
     try {
-        const { userId } = jwt.verify(token, process.env.SECRET_KEY) as JWTPayload
-        
+        const { userId } = jwt.verify(token, process.env.SECRET_KEY) as JWTPayload;       
         const session = await prisma.session.findFirst({
             where:{
                 token: token
             }
         })
-        console.log("caiu no session")
+        
         if(!session) return unauthorizedResponse(res);
         req.userId = userId
         return next()
     } catch (error) {
+        console.log(error);
         return unauthorizedResponse(res);    
     }
     
@@ -39,4 +39,4 @@ function unauthorizedResponse(res: Response){
 type JWTPayload = {
     userId: number
 }
-type AuthenticatedRequest = Request & JWTPayload;
+export type AuthenticatedRequest = Request & JWTPayload;

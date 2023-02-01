@@ -3,7 +3,7 @@ import { UserParams, SigninResult } from "../protocols";
 import userRepository from "../repositories/userRepository";
 import sessionRepository from "../repositories/sessionRepository"; 
 import bcrypt from 'bcrypt';
-import jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 
 async function signIn(params: UserParams ): Promise<SigninResult> {
     const { password, email } = params;
