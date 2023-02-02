@@ -10,14 +10,11 @@ async function signIn(params: UserParams ): Promise<SigninResult> {
     const user = await getUserOrFail(email);
 
     await validatePasswordOrFail(password, user.password);
-    const token = await  createSession(user.id);
+    const token  = await  createSession(user.id);
     
     return {
-        user: {
-            name: user.name,
-            email: user.email
-
-        },
+        name: user.name,
+        email: user.email,
         token,
     };
 };

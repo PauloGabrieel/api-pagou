@@ -15,3 +15,6 @@ export async function listTransactions(req: AuthenticatedRequest, res: Response)
     };
 };
 
+export async function postTransactions() {
+    
+}

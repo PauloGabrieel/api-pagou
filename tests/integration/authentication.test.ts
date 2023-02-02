@@ -70,10 +70,8 @@ describe("POST /signin", ()=> {
                 });
                 expect(response.status).toBe(httpStatus.OK);
                 expect(response.body).toEqual({
-                    user: {
-                        name: user.name,
-                        email: user.email
-                    },
+                    name: user.name,
+                    email: user.email,
                     token: token 
                 });
             })

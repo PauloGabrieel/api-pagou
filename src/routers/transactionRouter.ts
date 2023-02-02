@@ -7,6 +7,7 @@ const transactionRouter = Router();
 transactionRouter
     .all("/", authenticationToken)
     .get("/", listTransactions)
+    .post("/", )
 
 
 export default transactionRouter;

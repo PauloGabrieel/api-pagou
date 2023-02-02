@@ -12,6 +12,7 @@ export type CreateUserParams = Omit<User, "id"| "updatedAt" | "createdAt">;
 export type SessionParams = Pick<Session, "token" | "userId">;
 
 export type SigninResult = {
-user: Pick<User,"name" | "email">,
+    name: string,
+    email: string,
     token: string
 }

@@ -4,7 +4,6 @@ import { duplicatedEmailError } from "../errors/duplicateEmailError";
 import { CreateUserParams } from "../protocols";
 
 async function create({name, email, password}: CreateUserParams) {
-    console.log("chegou aqui")
     await emailAlready(email);
     
     const hashPassword = await createHashPassword(password);
