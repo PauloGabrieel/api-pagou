@@ -1,7 +1,8 @@
 import { Response } from "express";
 import httpStatus from "http-status";
 import { AuthenticatedRequest } from "../middlewares/authenticationMiddleware";
-import { getTransactions } from "../services/transactionService";
+import { getTransactions, postTransactions } from "../services/transactionService";
+import { CreateTransactionsParams } from "../protocols";
 
 export async function listTransactions(req: AuthenticatedRequest, res: Response) {
     const { userId } = req;
@@ -15,6 +16,21 @@ export async function listTransactions(req: AuthenticatedRequest, res: Response)
     };
 };
 
-export async function postTransactions() {
-    
-}
+export async function createTransactions(req: AuthenticatedRequest, res: Response) {
+    const {
+        value,
+        cardIssuer,
+        description, 
+        paymentMethod, 
+        cardLastDigits 
+    } = req.body as CreateTransactionsParams;
+    const { userId } = req
+    try {
+        const transaction = await postTransactions({cardIssuer, cardLastDigits, description, paymentMethod, userId, value});
+        return res.status(httpStatus.CREATED).send("created transaction");
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    };
+     
+};

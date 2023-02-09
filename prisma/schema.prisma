@@ -36,7 +36,7 @@ model Session {
 
 model Transaction {
   id             Int       @id @default(autoincrement())
-  valeu          Int
+  value          Int
   description    String    @db.VarChar(255)
   paymentMethod  CardType
   cardLastDigits String    @db.VarChar(4)
