@@ -12,14 +12,15 @@ async function list(userId: number) {
     });
 };
 
-async function create({cardIssuer, cardLastDigits,description, paymentMethod, value}:CreateTransactionsParams) {
+async function create({cardHolderName, cardIssuer, cardLastDigits,description, paymentMethod, value}:CreateTransactionsParams) {
     return prisma.transaction.create({
         data:{
             cardIssuer,
             cardLastDigits,
             description,
             paymentMethod,
-            value
+            value,
+            cardHolderName
         }
     });
 };

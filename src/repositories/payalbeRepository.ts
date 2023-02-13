@@ -1,12 +1,14 @@
 import { prisma } from "../config/database";
-import { PaymentStatus } from "@prisma/client";
+import { CreatePayableParams } from "../protocols";
 
-async function create(transactionId: number, userId: number, status: PaymentStatus){
+async function create({ value, transactionId, userId, status,paymentDate }: CreatePayableParams){
     return prisma.payable.create({
         data:{
             transactionId,
             userId,
             status,
+            paymentDate,
+            value
         }
     })
 };

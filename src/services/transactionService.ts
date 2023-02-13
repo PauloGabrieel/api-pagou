@@ -1,8 +1,11 @@
+import dayjs from "dayjs";
+import "dayjs/locale/pt-br";
 import transactionRepository from "../repositories/transactionRepository"
 import payableRepository from "../repositories/payalbeRepository";
 import { notFoundError } from "../errors/notFoundError";
 import { CreateTransactionsParams } from "../protocols";
 import { PaymentStatus, CardType } from "@prisma/client";
+
 
 type UserId = {userId: number}
 export type TransactionAndUserId = CreateTransactionsParams & UserId;
@@ -30,16 +33,19 @@ export async function postTransactions ({
     value, 
     description, 
     paymentMethod, 
-    userId
+    userId,
+    cardHolderName
 }: TransactionAndUserId) {
-    value = convertRealIntoCents(value);
+    const valueInCents = convertRealIntoCents(value);
     cardLastDigits = getLastDigits(cardLastDigits);
 
-    const { id: transactionId } = await transactionRepository.create({ cardIssuer, cardLastDigits, description, paymentMethod, value })
+    const { id: transactionId } = await transactionRepository.create({cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value: valueInCents })
+    
+    const status = paidOrExpectingFunds(paymentMethod); 
+    const paymentDate = formatData(paymentMethod);
+    const valueWithfeeInCent = convertRealIntoCents(calcTax(paymentMethod, value))
 
-    const status = paidOrExpectingFunds(paymentMethod);    
-
-    await payableRepository.create(transactionId, userId, status);
+    await payableRepository.create({transactionId, userId, status, paymentDate, value: valueWithfeeInCent });
 };
 
 function convertCentsInReal(value: number) {
@@ -49,7 +55,7 @@ function convertCentsInReal(value: number) {
 
 function convertRealIntoCents(value: number) {
     const REAIS_IN_CENTS = 100;
-    return value * REAIS_IN_CENTS; 
+    return Math.ceil(value * REAIS_IN_CENTS); 
 };
 
 function getLastDigits(cardNumber: string) {
@@ -57,9 +63,31 @@ function getLastDigits(cardNumber: string) {
 };
 
 function paidOrExpectingFunds(paymentMethod: string){
-    if(paymentMethod === CardType.credit_card) {
-        return PaymentStatus.waiting_funds;
+    if(paymentMethod === CardType.debit_card) {
+        return PaymentStatus.paid 
+    };
+    
+    return PaymentStatus.waiting_funds     
+};
+
+
+function formatData(paymentMethod: string) {
+    if(paymentMethod === CardType.debit_card) {
+        const paymentToday = new Date();
+        return paymentToday;
     };
 
-    return PaymentStatus.paid;  
+    const todyInMilliseconds = new Date().getTime()
+    const thirtyDaysInMilliseconds = 1000 * 60 * 60 * 24 * 30
+    const paymentInThirtyDays = new Date(todyInMilliseconds + thirtyDaysInMilliseconds)
+    return paymentInThirtyDays;
+};
+
+function calcTax(paymentMethod: string, value: number) {
+    if(paymentMethod === CardType.debit_card) {
+        const valueWithreePercentfee = value * 1.-0o3
+        return valueWithreePercentfee
+    }
+    const valueWitwoPercentfee = value * 1.-0o3
+    return valueWitwoPercentfee
 };

@@ -22,11 +22,12 @@ export async function createTransactions(req: AuthenticatedRequest, res: Respons
         cardIssuer,
         description, 
         paymentMethod, 
-        cardLastDigits 
+        cardLastDigits,
+        cardHolderName 
     } = req.body as CreateTransactionsParams;
     const { userId } = req
     try {
-        const transaction = await postTransactions({cardIssuer, cardLastDigits, description, paymentMethod, userId, value});
+        const transaction = await postTransactions({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, userId, value});
         return res.status(httpStatus.CREATED).send("created transaction");
     } catch (error) {
         console.log(error);

@@ -41,6 +41,7 @@ model Transaction {
   paymentMethod  CardType
   cardLastDigits String    @db.VarChar(4)
   cardIssuer     String    @db.VarChar(50)
+  cardHolderName String    @db.VarChar(50)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   Playable       Payable[]
@@ -50,11 +51,13 @@ model Transaction {
 
 model Payable {
   id            Int           @id @default(autoincrement())
+  value         Int
   status        PaymentStatus
   userId        Int
   User          User          @relation(fields: [userId], references: [id])
   transactionId Int
   Transaction   Transaction   @relation(fields: [transactionId], references: [id])
+  paymentDate   DateTime      @default(now())
 
   @@map("payables")
 }
