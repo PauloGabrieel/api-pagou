@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import httpStatus from "http-status";
-import { func, ObjectSchema } from "joi";
+import { ObjectSchema } from "joi";
 import { invalidDataError } from "../errors/invalidDataError";
 
 export function validateBody<T>(schema: ObjectSchema<T>): ValidationMiddleware {

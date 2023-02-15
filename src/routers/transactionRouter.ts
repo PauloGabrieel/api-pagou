@@ -10,6 +10,7 @@ transactionRouter
     .all("/", authenticationToken)
     .get("/", listTransactions)
     .post("/", validateBody(createTransactionSchema), createTransactions)
+    .put("/:transactionId", )
 
 
 export default transactionRouter;

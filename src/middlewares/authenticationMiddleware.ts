@@ -23,7 +23,7 @@ export async function authenticationToken(req: AuthenticatedRequest, res: Respon
         req.userId = userId
         return next()
     } catch (error) {
-        console.log(error);
+        console.log(error)
         return unauthorizedResponse(res);    
     }
     
