@@ -1,8 +1,8 @@
-import { ApplicationError } from "../protocols";
+import { ApplicationError } from '../protocols'
 
 export default function unauthorizadeError (message: string): ApplicationError {
-    return {
-        name: "UnauthorizedError",
-        message
-    }
+  return {
+    name: 'UnauthorizedError',
+    message
+  }
 }

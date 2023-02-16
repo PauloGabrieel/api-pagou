@@ -1,18 +1,17 @@
-import { SessionParams } from "../protocols";
-import { prisma } from "../config/database";
+import { SessionParams } from '../protocols'
+import { prisma } from '../config/database'
 
-
-async function create({token, userId}: SessionParams) {
-    await prisma.session.create({
-        data: {
-            token,
-            userId
-        }
-    })
+async function create ({ token, userId }: SessionParams) {
+  await prisma.session.create({
+    data: {
+      token,
+      userId
+    }
+  })
 }
 
 const sessionRepository = {
-    create
+  create
 }
 
-export default sessionRepository;
+export default sessionRepository
