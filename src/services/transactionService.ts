@@ -9,7 +9,6 @@ type UserId = {userId: number}
 export type TransactionAndUserId = CreateTransactionsParams & UserId;
 
 export async function getTransactions (userId: number) {
-  console.log('chegou aqui')
   const transactions = await transactionRepository.list(userId)
 
   if (!transactions) {

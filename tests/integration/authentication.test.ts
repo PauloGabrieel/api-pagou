@@ -10,7 +10,7 @@ beforeAll(async () => {
   await init()
 })
 
-afterAll(async () => {
+beforeEach(async () => {
   await cleanDb()
 })
 
@@ -53,7 +53,8 @@ describe('POST /signin', () => {
 
     describe('when crendentials are valid', () => {
       it('Should respond with status 200,user data and session token', async () => {
-        const body = generateValidBodyToSignUp()
+        const body = generateValidBodyToSignIn()
+        console.log(body)
         const user = await createUser(body)
 
         const response = await server.post('/signin').send({
@@ -61,7 +62,7 @@ describe('POST /signin', () => {
           password: body.password
         })
 
-        const { token } = await prisma.session.findFirst({
+        const token = await prisma.session.findFirst({
           select: { token: true },
           where: {
             userId: user.id
@@ -71,7 +72,7 @@ describe('POST /signin', () => {
         expect(response.body).toEqual({
           name: user.name,
           email: user.email,
-          token
+          token: token.token
         })
       })
     })

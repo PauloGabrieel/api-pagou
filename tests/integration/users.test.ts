@@ -7,10 +7,9 @@ import { prisma } from '../../src/config/database'
 
 beforeAll(async () => {
   await init()
-  await cleanDb()
 })
 
-afterAll(async () => {
+beforeEach(async () => {
   await cleanDb()
 })
 

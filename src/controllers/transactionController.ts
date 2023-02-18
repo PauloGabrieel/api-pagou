@@ -11,7 +11,6 @@ export async function listTransactions (req: AuthenticatedRequest, res: Response
     const transctions = await getTransactions(userId)
     return res.status(httpStatus.OK).send(transctions)
   } catch (error) {
-    console.log(error)
     return res.status(httpStatus.NOT_FOUND).send(error)
   };
 };
