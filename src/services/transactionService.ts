@@ -4,7 +4,6 @@ import { notFoundError } from '../errors/notFoundError'
 import { CreateTransactionsParams, DeleteTransactionParams } from '../protocols'
 import { PaymentStatus, CardType, Transaction } from '@prisma/client'
 import unauthorizadeError from '../errors/unauthorizedError'
-import userRepository from '../repositories/userRepository'
 
 type UserId = {userId: number}
 export type TransactionAndUserId = CreateTransactionsParams & UserId;
@@ -62,20 +61,11 @@ function formatTransactionData (transactions: Transaction[]) {
 }
 
 async function getTransactionOrFail (transactionId: number) {
-  console.log('chegou')
   const transaction = await transactionRepository.findUnique(transactionId)
   if (!transaction) {
     throw notFoundError()
   }
   return transaction
-}
-
-async function getUserOrFail (userId: number) {
-  const user = await userRepository.findById(userId)
-  if (!user) {
-    throw notFoundError()
-  }
-  return user
 }
 
 function transactionBelongTheUser (transactionUserId: number, userId: number) {
@@ -115,10 +105,9 @@ async function postTransactions ({
 
 async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
   const transaction = await getTransactionOrFail(transactionId)
-  const user = await getUserOrFail(userId)
   const payableId = transaction.Payable[0].id
-  transactionBelongTheUser(transaction.userId, user.id)
-  console.log(transaction)
+  transactionBelongTheUser(transaction.userId, userId)
+
   await payableRepository.deleteUnique(payableId)
   await transactionRepository.deleteUnique(transaction.id)
 }
