@@ -10,7 +10,7 @@ async function create ({ name, email, password }: CreateUserParams) {
   password = hashPassword
 
   await userRepository.create({ name, email, password })
-};
+}
 
 async function emailAlready (email: string) {
   const user = await userRepository.findByEmail(email)
@@ -18,13 +18,16 @@ async function emailAlready (email: string) {
   if (user) {
     throw duplicatedEmailError()
   }
-};
+}
 
 async function createHashPassword (password: string) {
   const hash = 12
   const hashPassword = await bcrypt.hash(password, hash)
   return hashPassword
-};
-export const userService = {
+}
+
+const userService = {
   create
 }
+
+export default userService

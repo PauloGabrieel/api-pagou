@@ -85,14 +85,14 @@ function transactionBelongTheUser (transactionUserId: number, userId: number) {
   }
 }
 
-export async function getTransactions (userId: number) {
+async function getTransactions (userId: number) {
   const transactions = await transactionRepository.list(userId)
 
   formatTransactionData(transactions)
   return transactions
 }
 
-export async function postTransactions ({
+async function postTransactions ({
   cardIssuer,
   cardLastDigits,
   value,
@@ -113,7 +113,7 @@ export async function postTransactions ({
   await payableRepository.create({ transactionId, userId, status, paymentDate, value: valueWithfeeInCent })
 }
 
-export async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
+async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
   const transaction = await getTransactionOrFail(transactionId)
   const user = await getUserOrFail(userId)
   const payableId = transaction.Payable[0].id
@@ -122,3 +122,11 @@ export async function deleteTransactiontionById ({ transactionId, userId }: Dele
   await payableRepository.deleteUnique(payableId)
   await transactionRepository.deleteUnique(transaction.id)
 }
+
+const transactionService = {
+  getTransactions,
+  postTransactions,
+  deleteTransactiontionById
+}
+
+export default transactionService

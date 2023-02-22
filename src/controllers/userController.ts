@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import httpStatus from 'http-status'
-import { userService } from '../services/userService'
+import userService from '../services/userService'
 import { CreateUserParams } from '../protocols'
 
 export async function createUser (req: Request, res: Response) {

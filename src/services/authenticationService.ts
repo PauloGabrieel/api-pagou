@@ -26,21 +26,22 @@ async function getUserOrFail (email: string) {
   };
 
   return user
-};
+}
 
 async function validatePasswordOrFail (password: string, userPassword: string) {
   const isValidPassword = await bcrypt.compare(password, userPassword)
   if (!isValidPassword) {
     throw invalidCredentialsError()
   };
-};
+}
 
 async function createSession (userId: number) {
   const token = jwt.sign({ userId }, process.env.SECRET_KEY)
   await sessionRepository.create({ token, userId })
 
   return token
-};
+}
+
 const authenticationService = {
   signIn
 }

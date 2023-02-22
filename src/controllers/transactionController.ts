@@ -1,14 +1,14 @@
 import { Response } from 'express'
 import httpStatus from 'http-status'
 import { AuthenticatedRequest } from '../middlewares/authenticationMiddleware'
-import { getTransactions, postTransactions, deleteTransactiontionById } from '../services/transactionService'
+import transactionService from '../services/transactionService'
 import { CreateTransactionsParams } from '../protocols'
 
 export async function listTransactions (req: AuthenticatedRequest, res: Response) {
   const { userId } = req
 
   try {
-    const transctions = await getTransactions(userId)
+    const transctions = await transactionService.getTransactions(userId)
     return res.status(httpStatus.OK).send(transctions)
   } catch (error) {
     return res.status(httpStatus.NOT_FOUND).send(error)
@@ -26,7 +26,7 @@ export async function createTransactions (req: AuthenticatedRequest, res: Respon
   } = req.body as CreateTransactionsParams
   const { userId } = req
   try {
-    await postTransactions({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, userId, value })
+    await transactionService.postTransactions({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, userId, value })
     return res.status(httpStatus.CREATED).send('created transaction')
   } catch (error) {
     console.log(error)
@@ -39,7 +39,7 @@ export async function deleteTransaction (req: AuthenticatedRequest, res: Respons
   const { userId } = req
   console.log(userId)
   try {
-    await deleteTransactiontionById({ userId, transactionId })
+    await transactionService.deleteTransactiontionById({ userId, transactionId })
     return res.sendStatus(httpStatus.OK)
   } catch (error) {
     if (error.name === 'UnauthorizedError') {
