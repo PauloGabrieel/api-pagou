@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import httpStatus from 'http-status'
 import { AuthenticatedRequest } from '../middlewares/authenticationMiddleware'
-import { getTransactions, postTransactions } from '../services/transactionService'
+import { getTransactions, postTransactions, deleteTransactiontionById } from '../services/transactionService'
 import { CreateTransactionsParams } from '../protocols'
 
 export async function listTransactions (req: AuthenticatedRequest, res: Response) {
@@ -33,3 +33,18 @@ export async function createTransactions (req: AuthenticatedRequest, res: Respon
     return res.sendStatus(500)
   };
 };
+
+export async function deleteTransaction (req: AuthenticatedRequest, res: Response) {
+  const transactionId = Number(req.params.transactionId)
+  const { userId } = req
+  console.log(userId)
+  try {
+    await deleteTransactiontionById({ userId, transactionId })
+    return res.sendStatus(httpStatus.OK)
+  } catch (error) {
+    if (error.name === 'UnauthorizedError') {
+      return res.status(httpStatus.UNAUTHORIZED).send(error)
+    }
+    return res.status(httpStatus.NOT_FOUND).send(error)
+  }
+}

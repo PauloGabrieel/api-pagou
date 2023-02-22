@@ -10,6 +10,7 @@ async function create ({ name, email, password }: CreateUserParams) {
     }
   })
 }
+
 async function findByEmail (email: string) {
   return prisma.user.findFirst({
     where: {
@@ -18,9 +19,18 @@ async function findByEmail (email: string) {
   })
 }
 
+async function findById (id: number) {
+  return prisma.user.findFirst({
+    where: {
+      id
+    }
+  })
+}
+
 const userRepository = {
   create,
-  findByEmail
+  findByEmail,
+  findById
 }
 
 export default userRepository

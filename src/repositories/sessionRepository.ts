@@ -9,7 +9,6 @@ async function create ({ token, userId }: SessionParams) {
     }
   })
 }
-
 const sessionRepository = {
   create
 }

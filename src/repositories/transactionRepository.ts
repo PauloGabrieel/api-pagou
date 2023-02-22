@@ -2,17 +2,13 @@ import { prisma } from '../config/database'
 import { CreateTransactionsParams } from '../protocols'
 async function list (userId: number) {
   return prisma.transaction.findMany({
-    include: {
-      Playable: {
-        where: {
-          userId
-        }
-      }
+    where: {
+      userId
     }
   })
 };
 
-async function create ({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value }:CreateTransactionsParams) {
+async function create ({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value, userId }:CreateTransactionsParams) {
   return prisma.transaction.create({
     data: {
       cardIssuer,
@@ -20,14 +16,36 @@ async function create ({ cardHolderName, cardIssuer, cardLastDigits, description
       description,
       paymentMethod,
       value,
-      cardHolderName
+      cardHolderName,
+      userId
     }
   })
 };
 
+async function findUnique (id: number) {
+  return prisma.transaction.findFirst({
+    where: {
+      id
+    },
+    include: {
+      Payable: true
+    }
+  })
+}
+
+async function deleteUnique (id: number) {
+  return prisma.transaction.delete({
+    where: {
+      id
+    }
+  })
+}
+
 const transactionRepository = {
   list,
-  create
+  create,
+  findUnique,
+  deleteUnique
 }
 
 export default transactionRepository

@@ -54,7 +54,7 @@ describe('GET /transactions', () => {
       const user = await createUser()
       const token = await generateValidToken(user)
       const transactionsData = generetaValidBodyToTransactions()
-      const transaction = await createTransactions(transactionsData)
+      const transaction = await createTransactions({ ...transactionsData, userId: user.id })
       await createPayable(transaction.id, user.id)
       const response = await server.get('/transactions').set('Authorization', `Bearer ${token}`)
 

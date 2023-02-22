@@ -11,6 +11,8 @@ export type CreateUserParams = Omit<User, 'id'| 'updatedAt' | 'createdAt'>;
 
 export type CreateTransactionsParams = Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>
 
+export type DeleteTransactionParams = { transactionId: number, userId: number}
+
 export type CreatePayableParams = Omit<Payable, 'id' >
 
 export type SessionParams = Pick<Session, 'token' | 'userId'>;

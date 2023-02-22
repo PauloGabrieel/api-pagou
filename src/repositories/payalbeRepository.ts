@@ -13,8 +13,25 @@ async function create ({ value, transactionId, userId, status, paymentDate }: Cr
   })
 };
 
+async function list (userId : number) {
+  return prisma.payable.findMany({
+    where: { userId },
+    include: { Transaction: true }
+  })
+}
+
+async function deleteUnique (id: number) {
+  return prisma.payable.delete({
+    where: {
+      id
+    }
+  })
+}
+
 const payableRepository = {
-  create
+  create,
+  list,
+  deleteUnique
 }
 
 export default payableRepository

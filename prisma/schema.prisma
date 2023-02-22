@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(255)
-  email     String    @unique @db.VarChar(255)
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Session   Session[]
-  Playable  Payable[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  email        String        @unique @db.VarChar(255)
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  Session      Session[]
+  Payable      Payable[]
+  Transactions Transaction[]
 
   @@map("users")
 }
@@ -44,7 +45,9 @@ model Transaction {
   cardHolderName String    @db.VarChar(50)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  Playable       Payable[]
+  User           User      @relation(fields: [userId], references: [id])
+  userId         Int
+  Payable        Payable[]
 
   @@map("transactions")
 }

@@ -1,49 +1,13 @@
-import 'dayjs/locale/pt-br'
 import transactionRepository from '../repositories/transactionRepository'
 import payableRepository from '../repositories/payalbeRepository'
 import { notFoundError } from '../errors/notFoundError'
-import { CreateTransactionsParams } from '../protocols'
-import { PaymentStatus, CardType } from '@prisma/client'
+import { CreateTransactionsParams, DeleteTransactionParams } from '../protocols'
+import { PaymentStatus, CardType, Transaction } from '@prisma/client'
+import unauthorizadeError from '../errors/unauthorizedError'
+import userRepository from '../repositories/userRepository'
 
 type UserId = {userId: number}
 export type TransactionAndUserId = CreateTransactionsParams & UserId;
-
-export async function getTransactions (userId: number) {
-  const transactions = await transactionRepository.list(userId)
-
-  if (!transactions) {
-    throw notFoundError()
-  };
-
-  transactions.forEach((transaction) => {
-    delete transaction.Playable
-    delete transaction.updatedAt
-    delete transaction.createdAt
-    transaction.value = convertCentsInReal(transaction.value)
-  })
-  return transactions
-};
-
-export async function postTransactions ({
-  cardIssuer,
-  cardLastDigits,
-  value,
-  description,
-  paymentMethod,
-  userId,
-  cardHolderName
-}: TransactionAndUserId) {
-  const valueInCents = convertRealIntoCents(value)
-  cardLastDigits = getLastDigits(cardLastDigits)
-
-  const { id: transactionId } = await transactionRepository.create({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value: valueInCents })
-
-  const status = paidOrExpectingFunds(paymentMethod)
-  const paymentDate = formatData(paymentMethod)
-  const valueWithfeeInCent = convertRealIntoCents(calcTax(paymentMethod, value))
-
-  await payableRepository.create({ transactionId, userId, status, paymentDate, value: valueWithfeeInCent })
-};
 
 function convertCentsInReal (value: number) {
   const CENTS_IN_REAIS = 100
@@ -87,3 +51,74 @@ function calcTax (paymentMethod: string, value: number) {
   const valueWitwoPercentfee = value * 1.0 - 0o3
   return valueWitwoPercentfee
 };
+
+function formatTransactionData (transactions: Transaction[]) {
+  transactions.forEach((transaction) => {
+    transaction.value = convertCentsInReal(transaction.value)
+    delete transaction.updatedAt
+    delete transaction.createdAt
+    delete transaction.userId
+  })
+}
+
+export async function getTransactions (userId: number) {
+  const transactions = await transactionRepository.list(userId)
+
+  formatTransactionData(transactions)
+  return transactions
+};
+
+export async function postTransactions ({
+  cardIssuer,
+  cardLastDigits,
+  value,
+  description,
+  paymentMethod,
+  userId,
+  cardHolderName
+}: TransactionAndUserId) {
+  const valueInCents = convertRealIntoCents(value)
+  cardLastDigits = getLastDigits(cardLastDigits)
+
+  const { id: transactionId } = await transactionRepository.create({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value: valueInCents, userId })
+
+  const status = paidOrExpectingFunds(paymentMethod)
+  const paymentDate = formatData(paymentMethod)
+  const valueWithfeeInCent = convertRealIntoCents(calcTax(paymentMethod, value))
+
+  await payableRepository.create({ transactionId, userId, status, paymentDate, value: valueWithfeeInCent })
+};
+
+export async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
+  const transaction = await getTransactionOrFail(transactionId)
+  const user = await getUserOrFail(userId)
+  const payableId = transaction.Payable[0].id
+  transactionBelongTheUser(transaction.userId, user.id)
+  console.log(transaction)
+  await payableRepository.deleteUnique(payableId)
+  await transactionRepository.deleteUnique(transaction.id)
+}
+
+async function getTransactionOrFail (transactionId: number) {
+  console.log('chegou')
+  const transaction = await transactionRepository.findUnique(transactionId)
+  if (!transaction) {
+    throw notFoundError()
+  }
+  return transaction
+}
+
+async function getUserOrFail (userId: number) {
+  const user = await userRepository.findById(userId)
+  if (!user) {
+    throw notFoundError()
+  }
+  return user
+}
+
+function transactionBelongTheUser (transactionUserId: number, userId: number) {
+  if (transactionUserId !== userId) {
+    const message = 'transaction does not belong to the user'
+    throw unauthorizadeError(message)
+  }
+}
