@@ -61,44 +61,6 @@ function formatTransactionData (transactions: Transaction[]) {
   })
 }
 
-export async function getTransactions (userId: number) {
-  const transactions = await transactionRepository.list(userId)
-
-  formatTransactionData(transactions)
-  return transactions
-};
-
-export async function postTransactions ({
-  cardIssuer,
-  cardLastDigits,
-  value,
-  description,
-  paymentMethod,
-  userId,
-  cardHolderName
-}: TransactionAndUserId) {
-  const valueInCents = convertRealIntoCents(value)
-  cardLastDigits = getLastDigits(cardLastDigits)
-
-  const { id: transactionId } = await transactionRepository.create({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value: valueInCents, userId })
-
-  const status = paidOrExpectingFunds(paymentMethod)
-  const paymentDate = formatData(paymentMethod)
-  const valueWithfeeInCent = convertRealIntoCents(calcTax(paymentMethod, value))
-
-  await payableRepository.create({ transactionId, userId, status, paymentDate, value: valueWithfeeInCent })
-};
-
-export async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
-  const transaction = await getTransactionOrFail(transactionId)
-  const user = await getUserOrFail(userId)
-  const payableId = transaction.Payable[0].id
-  transactionBelongTheUser(transaction.userId, user.id)
-  console.log(transaction)
-  await payableRepository.deleteUnique(payableId)
-  await transactionRepository.deleteUnique(transaction.id)
-}
-
 async function getTransactionOrFail (transactionId: number) {
   console.log('chegou')
   const transaction = await transactionRepository.findUnique(transactionId)
@@ -121,4 +83,42 @@ function transactionBelongTheUser (transactionUserId: number, userId: number) {
     const message = 'transaction does not belong to the user'
     throw unauthorizadeError(message)
   }
+}
+
+export async function getTransactions (userId: number) {
+  const transactions = await transactionRepository.list(userId)
+
+  formatTransactionData(transactions)
+  return transactions
+}
+
+export async function postTransactions ({
+  cardIssuer,
+  cardLastDigits,
+  value,
+  description,
+  paymentMethod,
+  userId,
+  cardHolderName
+}: TransactionAndUserId) {
+  const valueInCents = convertRealIntoCents(value)
+  cardLastDigits = getLastDigits(cardLastDigits)
+
+  const { id: transactionId } = await transactionRepository.create({ cardHolderName, cardIssuer, cardLastDigits, description, paymentMethod, value: valueInCents, userId })
+
+  const status = paidOrExpectingFunds(paymentMethod)
+  const paymentDate = formatData(paymentMethod)
+  const valueWithfeeInCent = convertRealIntoCents(calcTax(paymentMethod, value))
+
+  await payableRepository.create({ transactionId, userId, status, paymentDate, value: valueWithfeeInCent })
+}
+
+export async function deleteTransactiontionById ({ transactionId, userId }: DeleteTransactionParams) {
+  const transaction = await getTransactionOrFail(transactionId)
+  const user = await getUserOrFail(userId)
+  const payableId = transaction.Payable[0].id
+  transactionBelongTheUser(transaction.userId, user.id)
+  console.log(transaction)
+  await payableRepository.deleteUnique(payableId)
+  await transactionRepository.deleteUnique(transaction.id)
 }
