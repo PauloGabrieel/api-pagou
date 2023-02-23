@@ -1,5 +1,6 @@
 import { prisma } from '../config/database'
 import { CreatePayableParams } from '../protocols'
+import { PaymentStatus } from '@prisma/client'
 
 async function create ({ value, transactionId, userId, status, paymentDate }: CreatePayableParams) {
   return prisma.payable.create({
@@ -13,10 +14,9 @@ async function create ({ value, transactionId, userId, status, paymentDate }: Cr
   })
 };
 
-async function list (userId : number) {
+async function list (userId : number, status: PaymentStatus) {
   return prisma.payable.findMany({
-    where: { userId },
-    include: { Transaction: true }
+    where: { userId, status }
   })
 }
 

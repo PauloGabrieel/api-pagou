@@ -3,6 +3,7 @@ import cors from 'cors'
 import authenticationRouter from './routers/authenticationRouter'
 import userRouter from './routers/userRouter'
 import transactionRouter from './routers/transactionRouter'
+import payableRouter from './routers/payableRouter'
 import { connectDb, disconnectDb } from './config/database'
 import loadEnvs from './config/envs'
 
@@ -16,6 +17,7 @@ app
   .use('/signup', userRouter)
   .use('/signin', authenticationRouter)
   .use('/transactions', transactionRouter)
+  .use('/payables', payableRouter)
 
 export function init (): Promise<Express> {
   connectDb()

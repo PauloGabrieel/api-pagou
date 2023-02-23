@@ -54,7 +54,6 @@ describe('POST /signin', () => {
     describe('when crendentials are valid', () => {
       it('Should respond with status 200,user data and session token', async () => {
         const body = generateValidBodyToSignIn()
-        console.log(body)
         const user = await createUser(body)
 
         const response = await server.post('/signin').send({
