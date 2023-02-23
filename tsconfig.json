@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": ".",
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -10,8 +9,9 @@
     "target": "es2020",
     "lib": ["es6"],
     "removeComments": true,
+    "rootDir": "."
   },
   "ts-node": {
     "esm": true
-  }
+  },
 }
