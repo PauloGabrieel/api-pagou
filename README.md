@@ -1,17 +1,82 @@
 <h1 align='center' > 🚧 Pagou 1.0 em construção 🚧  </h1>
 
-## 💻 Sobre o projeto  
+## 📋 Descrição  
 
 Api de pagamentos online. Onde o cliente pode realizar transações de débito, crédito, consegue acompanhar e gerenciar seus recebíveis.
 
-### Pré-requisitos
+---
+
+## 💻 Tecnologias e Conceitos
+
+- REST APIs
+- JWTs
+- Node.js com Express
+- TypeScript
+- PostgreSQL com Prisma(ORM)
+- Testes de integração com Jest
+- Environment variables
+- Arquitetura em camadas
+
+---
+
+## 🚀 Routes
+
+```bash
+POST /signup
+- cria um novo usuário
+- header: {}
+- body: {
+  "name": "Fulano da silva",
+  "email": "fulano@email.com",
+  "password": "minhasenha"
+}
+
+- Retorno em caso de sucesso: 
+    statusCode: 201
+
+- Retorno em caso de falho:
+    Tipos enviados no body inválidos.
+    statusCode: 400
+
+    Email já cadastrado.
+    statusCodo: 409
+
+```
+
+```bash
+POST /signin
+- logar com um usuário criado
+- header: {}
+- body: {
+  "email": "fulano@email.com",
+  "password": "minhasenha"
+}
+
+- Retorno em caso de sucesso:
+- statusCode: 200
+- body: {
+  "name": "Claudia Corrêa",
+  "email": "claudia@gmail.com",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.      eyJ1c2VySWQiOjE0LCJpYXQiOjE2Nzc3MTMxMDN9.QpDVfyKoXvUouLLiDCRG2WeoBkA2c5PLlz9TeE15Yg4"
+
+}
+
+- Retorno em caso de falha: 
+- statusCode: 401
+- body: {
+  "name": "InvalidCredentialsError",
+  "message": "email or password are incorrect"
+}
+```
+
+## Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado as seguintes ferramentas:
 [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) e o banco de dados [PostgreSQL](https://www.postgresql.org/)
 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
-### 🎲 Rodando a API.
+## 🎲 Rodando a API.
 
 ```bash
 # Clone esse repositório 
@@ -22,6 +87,8 @@ $ cd pagou
 
 # Instale as dependências
 $ npm install 
+
+# Nesse repositório tem um arquivo .env.example, arquivo para você utilizar como exemplo para configurar seus .envs
 
 # execute a aplicação em modo de desenvolvimento 
 $ npm run dev
@@ -36,7 +103,7 @@ $ npm run dev
 $ cd pagou
 
 # instale as dependências 
-$npm install
+$ npm install
 
 # Para testar todas as rotas execute o script de tests
 $ npm test
@@ -44,16 +111,6 @@ $ npm test
 # Para testar uma determinada rota, execute o script de teste mais o nome da rota
 $ npm test transactions
 ```
-
-## 🛠 Tecnologias
-
-
-- [TypeScript](https://www.typescriptlang.org/)
-- [Node.js](https://nodejs.org/en/)
-- [express.js](https://expressjs.com/pt-br/)
-- [Jest](https://jestjs.io/pt-BR/)
-- [PostgreSQL](https://www.postgresql.org/)
-
 
 
 Autor
